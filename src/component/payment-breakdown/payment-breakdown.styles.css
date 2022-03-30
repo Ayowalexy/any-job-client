@@ -1,0 +1,46 @@
+.label-amount p {
+    margin-bottom: -19px;
+    font-size: 12px;
+    padding-left: 30px;
+
+}
+
+.confirm {
+    width: 90%;
+    height: 200px;
+    border-radius: 10px;
+    background-color: rgb(170, 173, 175);
+    padding: 30px 50px;
+    display: flex;
+    margin-bottom: 50px;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
+.confirm_one {
+    display: flex;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: rgb(8, 26, 77);
+    font-weight: normal;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.confirm_one div:nth-of-type(2){
+    font-weight: bold;
+}
+
+.move {
+    margin: 50px 0px 100px 0px;
+}
+
+.three {
+    width: 50%;
+    padding: 70px;
+    border-left: 1px solid rgb(15, 3, 49);
+    border-bottom: 1px solid rgb(15, 3, 49);
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-right: 1px solid rgb(15, 3, 49);
+    box-shadow: 5px 5px 15px rgba(15, 3, 49, 0.5);
+}
