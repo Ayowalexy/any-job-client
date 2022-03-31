@@ -20,7 +20,7 @@ const PaymentBreakdown = ({history, options}) => {
 
          const { paymentOption } = options
          console.log(paymentOption)
-         await axios.post('https://any-job.herokuapp.com/payment-option', {
+         await axios.post('https://any-job-server.herokuapp.com/payment-option', {
              paymentOption
          })
             .then(res => {
