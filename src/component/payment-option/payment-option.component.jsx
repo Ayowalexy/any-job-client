@@ -13,9 +13,8 @@ import SuccessAnimation from '../success-animation/success-animation.component';
 // import './index'
 
 
-const PaymentOption = ({history, location, setOptions, success, setState}) => {
+const PaymentOption = ({history, location, setOptions, success = {}, setState}) => {
 
-    console.log(success)
     const [formattedValue, setFormattedValue] = useState(0);
     const [value, setValue] = useState(0)
     const [data, setData] = useState({
