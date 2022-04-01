@@ -1,15 +1,22 @@
 const INITIAL_STATE = {
-    paymentOption: {}
+    paymentOption: {},
+    success: false
 }
 
 const paymentReducer =  (state = INITIAL_STATE, action) => {
     switch(action.type){
         case 'SET_PAYMENT_OPTIONS':
-            console.log(action.payload)
             return {
                 ...state,
                 paymentOption: action.payload
             }
+
+        case 'SET_SUCCESS':
+            return {
+                ...state,
+                success: action.payload
+            }
+
         default: return state
     }
 }

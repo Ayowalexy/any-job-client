@@ -6,14 +6,18 @@ import 'react-circular-progressbar/dist/styles.css'
 import { motion } from 'framer-motion';
 import ProgressProvider from '../utils/ProgressPrvider';
 import { connect } from 'react-redux';
-import { setPaymentOptions } from '../../redux/payment/payment.reducer.actions';
+import { setPaymentOptions, setSuccess } from '../../redux/payment/payment.reducer.actions';
 import NumberFormat  from 'react-number-format';
+import SuccessAnimation from '../success-animation/success-animation.component';
 
 // import './index'
 
 
-const PaymentOption = ({history, setOptions}) => {
+const PaymentOption = ({history, location, setOptions, success, setState}) => {
 
+    console.log(success)
+    const [formattedValue, setFormattedValue] = useState(0);
+    const [value, setValue] = useState(0)
     const [data, setData] = useState({
        status: '',
        request_amount: '',
@@ -22,13 +26,23 @@ const PaymentOption = ({history, setOptions}) => {
 
     })
 
-    const hanldeChange = event => {
+    const { state = {} } = location;
+
+    const [show, setShow] = useState(Object.keys(state).includes('success'));
+    const hanldeChange = (value, name) => {
         // setData({
-            data[[event.target.name]] = event.target.value
+            // data[[event.target.name]] = event.target.value
+            data[name] = value;
         // })
-        // console.log(data)
+
     }
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        setTimeout(() => {
+            success.success ? setState({success:false}) : console.log('')
+        }, 3000)
+    }, [show])
 
 
     const percentage = 35;
@@ -36,7 +50,9 @@ const PaymentOption = ({history, setOptions}) => {
     const handleSubmit = event => {
         event.preventDefault();
         setOptions(data)
-        history.push('/payment-breakdown');
+        history.push('/payment-breakdown', {
+            formattedValue, value
+        });
     }
 
     return (
@@ -50,6 +66,10 @@ const PaymentOption = ({history, setOptions}) => {
                 <div className="payment-option-container move">
                 <div className="payment-option-section"></div>
                 <div className="payment-option-section two">
+
+                    {
+                        success.success ? <SuccessAnimation /> : null
+                    }
                     <p className="my-rent">My Rent</p>
                     <div className="payment-option-section-two-inner-section">
                         <div className="sec-one">
@@ -83,20 +103,43 @@ const PaymentOption = ({history, setOptions}) => {
                                     
                                                 <label>
                                                         
-                                                        <input type="radio" required onChange={hanldeChange} name="status" value="looking" id="looking"/>
+                                                        <input type="radio" 
+                                                            required 
+                                                            onChange={(event) => {
+                                                                                    hanldeChange(event.target.value, event.target.name)
+                                                                                }} 
+                                                            name="status" 
+                                                            value="looking" 
+                                                            id="looking"
+                                                        />
                                                         <p className="custom-radio-btn-parent">
                                                             Looking to renew my rent
                                                         </p>
 
                                                 </label>
                                                 <label>
-                                                        <input type="radio" required onChange={hanldeChange} name="status" value="pay" id="pay"/>
+                                                        <input type="radio" 
+                                                            required 
+                                                            onChange={(event) => {
+                                                                                    hanldeChange(event.target.value, event.target.name)
+                                                                                }} 
+                                                            name="status"
+                                                            value="pay" 
+                                                            id="pay"
+                                                        />
                                                         <p className="custom-radio-btn-parent">
                                                             Want to pay for a new place
                                                         </p>
                                                 </label>
                                                 <label>
-                                                        <input type="radio" required onChange={hanldeChange} name="status" value="searching" id="searching"/>
+                                                        <input type="radio" 
+                                                            required onChange={(event) => {
+                                                                                    hanldeChange(event.target.value, event.target.name)
+                                                                                }} 
+                                                            name="status" 
+                                                            value="searching" 
+                                                            id="searching"
+                                                        />
                                                         <p className="custom-radio-btn-parent">
                                                             I'm still searching
                                                         </p>
@@ -104,18 +147,54 @@ const PaymentOption = ({history, setOptions}) => {
                                 </div>
                                                                                                                 
                                     <p className="details">How much is your rent request amount?</p>
-                                        <input type="text" required onChange={hanldeChange} name="request_amount" placeholder="Amount" className="request"/>
+                                        <NumberFormat 
+                                            required
+                                            className="request"
+                                            value={data['request_amount']}
+                                            placeholder="Amount"
+                                            thousandSeparator={true}
+                                            name="request_amount"
+                                            prefix={"₦"}
+                                            onValueChange={(values, sourceInfo) => {
+                                                hanldeChange(values.value, sourceInfo.event.target.name)
+                                                setFormattedValue(values.formattedValue);
+                                                setValue(values.value)
+                                            }}
+                                        />
+                                        {/* <input type="text" required onChange={hanldeChange} name="request_amount" placeholder="Amount" className="request"/> */}
 
                                     <p className="details">How much do you earn monthly?</p>
-                                        <input onChange={hanldeChange} required type="text" name="monthly_earning" placeholder="Amount" className="monthly-earning"/>
+                                    <NumberFormat 
+                                            required
+                                            className="monthly-earning"
+                                            value={data['monthly_earning']}
+                                            placeholder="Amount"
+                                            thousandSeparator={true}
+                                            name="monthly_earning"
+                                            prefix={"₦"}
+                                            onValueChange={(values, sourceInfo) => {
+                                                hanldeChange(values.value, sourceInfo.event.target.name)
+                                            }}
+                                        />
+                                        {/* <input onChange={hanldeChange} required type="text" name="monthly_earning" placeholder="Amount" className="monthly-earning"/> */}
 
                                     <p className="details">Choose a monthly payment plan</p>
                                     <div className="custom-select">
-                                            <select onChange={hanldeChange} required name="payment_plan" className="payment-plan">
-                                                <option className="options" value="1 month">1 Month</option>
-                                                <option value="2 month">2 Month</option>
-                                                <option value="3 month">3 Month</option>
-                                                <option value="4 month">4 Month</option>
+                                            <select onChange={(event) => {
+                                                hanldeChange(event.target.value, event.target.name)
+                                            }} required name="payment_plan" className="payment-plan">
+                                                <option selected value="1">1 Month</option>
+                                                <option value="2">2 Month</option>
+                                                <option value="3">3 Months</option>
+                                                <option value="4">4 Months</option>
+                                                <option value="5">5 Months</option>
+                                                <option value="6">6 Months</option>
+                                                <option value="7">7 Months</option>
+                                                <option value="8">8 Months</option>
+                                                <option value="9">9 Months</option>
+                                                <option value="10">10 Months</option>
+                                                <option value="11">11 Months</option>
+                                                <option value="12">12 Months</option>
                                             </select>
                                     </div>
                                     <input type="submit" value="NEXT" className="submit"/>
@@ -132,8 +211,13 @@ const PaymentOption = ({history, setOptions}) => {
     )
 }
 
-const mapDispatchToProps = dispatch => ({
-    setOptions: options => dispatch(setPaymentOptions(options))
+const mapStateToProps = ({ options: {success}}) => ({
+    success
 })
 
-export default connect(null, mapDispatchToProps)(PaymentOption);
+const mapDispatchToProps = dispatch => ({
+    setOptions: options => dispatch(setPaymentOptions(options)),
+    setState: state => dispatch(setSuccess(state))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(PaymentOption);
